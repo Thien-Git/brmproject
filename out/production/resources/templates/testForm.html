@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="<http://www.thymeleaf.org>">
+<body>
+<div class="container">
+  <form method="post" th:action="@{/customers/new}" th:object="${customer}">
+    <div class="row">
+      <div class="col-xl-4">
+        <!-- Profile picture card-->
+      </div>
+      <div class="col-xl-8">
+        <!-- Account details card-->
+        <div class="card mb-4">
+          <div class="card-header">New Member</div>
+          <div class="card-body">
+            <!-- Form Group (username)-->
+            <div class="row gx-3 mb-3">
+              <!-- Form Group (first name)-->
+              <div class="col-md-6">
+                <label class="small mb-1">Customer Name</label>
+                <input th:field="*{name}" type="text"  class="form-control" required>
+              </div>
+              <!-- Form Group (last name)-->
+              <div class="col-md-6">
+                <label class="small mb-1">phone</label>
+                <input th:field="*{phone}"type="text"  class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="small mb-1">address</label>
+                <input th:field="*{address}" type="text"  class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="small mb-1">email</label>
+                <input  th:field="*{email}" type="text"  class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="small mb-1">debit</label>
+                <input  th:field="*{debit}" type="number"  class="form-control" required>
+              </div>
+
+            </div>
+            <!-- Form Row-->
+          </div>
+          <!-- Form Row-->
+          <!-- Save changes button-->
+        </div>
+      </div>
+      <button type="submit"> submit</button>
+    </div>
+  </form>
+</div> <!-- /container -->
+</body>
+</html>

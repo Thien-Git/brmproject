@@ -20,11 +20,12 @@ public class RoleEntity {
     @Id
     @Column(name = "id", nullable = false)
     private int id;
+    
     @Basic
-    @Column(name = "name", nullable = true, length = 10)
-    private String name;
-    @OneToMany(mappedBy = "roleByRoleId")
-    private Collection<UserRoleEntity> userRolesById;
+    @Column(name = "name", nullable = true, length = 20)
+    @Enumerated(EnumType.STRING)
+    private ERole name;
+
 
     public int getId() {
         return id;
@@ -34,11 +35,12 @@ public class RoleEntity {
         this.id = id;
     }
 
-    public String getName() {
+  
+    public ERole getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(ERole name) {
         this.name = name;
     }
 
@@ -55,11 +57,11 @@ public class RoleEntity {
         return Objects.hash(id, name);
     }
 
-    public Collection<UserRoleEntity> getUserRolesById() {
-        return userRolesById;
+    public RoleEntity(ERole name) {
+        this.name = name;
     }
 
-    public void setUserRolesById(Collection<UserRoleEntity> userRolesById) {
-        this.userRolesById = userRolesById;
-    }
+    
+
+
 }

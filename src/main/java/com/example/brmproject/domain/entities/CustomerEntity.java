@@ -1,5 +1,6 @@
 package com.example.brmproject.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class CustomerEntity {
     @Column(name = "user_id", nullable = true, insertable = false, updatable = false)
     private Integer userId;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
     @OneToMany(mappedBy = "customerByCustomerId")

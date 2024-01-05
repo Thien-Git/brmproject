@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate/adminLayout}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Staff DashBoard</title>
+    <style>
+        .extra-info {
+            padding-left: 30px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<section layout:fragment="content" class="content-wrapper">
+    <div class="container">
+        <h1>All Customer</h1>
+
+        <div>
+            <table
+            class="display table table-striped table-bordered dt-responsive nowrap dtr-inline collapsed "
+            style="position: relative;width: 100%;" aria-describedby="example-info" id="abc">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Addresss</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="customer, rowStat : ${allCustomer}">
+                        <td th:text="${rowStat.index + 1}"></td>
+                        <td th:text="${customer.name}"></td>
+                        <td th:text="${customer.email}"></td>
+                        <td th:text="${customer.phone}"></td>
+                        <td th:text="${customer.address}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+  
+
+</section>
+</body>
+
+<section layout:fragment="optional">
+    <!-- Page specific script -->
+    <script>
+    </script>
+
+</section>
+
+
+</html>

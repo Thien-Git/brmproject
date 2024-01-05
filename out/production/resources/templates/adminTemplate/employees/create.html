@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate/adminLayout}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Staff DashBoard</title>
+    <style>
+        .extra-info {
+            padding-left: 30px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!--              <h3 th:text="${#authorization.getAuthentication().getAuthorities()}"></h3>-->
+                        <th:block>
+                            <!-- AREA CHART -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title align-middle" id="revenueYear"></h3>
+
+                                    <span class="extra-info" data-toggle="tooltip" data-placement="top"
+                                          title="Total Revenue = 100% money OrderCompleted + 40% money OrderCanceled + 40% money OrderUncompleted + 10% money OrderRefunded.">
+                                            <i class="fas fa-info-circle"></i>
+                                        </span>
+
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart">
+                                        <canvas id="revenueYearChart"
+                                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                        <!--                    <button onclick="changeCurrency('en-US','VND','23474')">USD -> VND</button>-->
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title"> Three-Month Order Status Count Chart</h3>
+
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart">
+                                        <canvas id="orderCount3MonthChart"
+                                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+
+                            <!-- /.card -->
+                        </th:block>
+                        <!--                        <input type="hidden" id="token" th:value="">-->
+
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+
+    </div>
+
+</section>
+</body>
+
+<section layout:fragment="optional">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+
+
+    <script>
+        let token = $('#token').val();
+        let currentYear = (new Date()).getFullYear()
+        // console.log(currentYear)
+        let DOMAIN_APP_API = "http://localhost:9999";
+        let api_getRevenueByYear = DOMAIN_APP_API + "/staff/revenues/getRevenueByYear/";
+        let api_getOrderCount3Month = DOMAIN_APP_API + "/staff/revenues/getOrderCount3Month/";
+
+        $(function () {
+
+            if (token != undefined) {
+                loadRevenueByYear(currentYear);
+                loadOrderIn3Month(currentYear);
+            }
+
+
+
+
+            function loadRevenueByYear(currentYear) {
+                console.log(currentYear)
+
+                $.ajax({
+                    type: "GET",
+                    url: api_getRevenueByYear + currentYear,
+                    dataType: "json",
+                    contentType: "application/json",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    data: {},
+                    success: function (response) {
+                        console.log(response)
+                        if (response.statusCode == 200) {
+                            $("#revenueYear").text("Monthly Finance Report for " + currentYear)
+                            const monthsArray = [];
+                            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                            const revenueInYearArray = [];
+                            const profitInYearArray = [];
+                            const costInYearArray = [];
+
+
+                            response.profits['profitMonthList'].map(item => {
+                                profitInYearArray.push(item.totalProfitInMonth);
+                            });
+
+                            response.revenues['revenueMonthList'].map(item => {
+                                const monthName = monthNames[item.month - 1];
+                                revenueInYearArray.push(item.revenueInMonth);
+                                monthsArray.push(monthName);
+                            });
+
+                            for (let i = 0; i < revenueInYearArray.length; i++) {
+                                const cost = revenueInYearArray[i] - profitInYearArray[i];
+                                costInYearArray.push(cost);
+                            }
+
+
+
+                            const ctx = document.getElementById('revenueYearChart').getContext('2d');
+
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: monthsArray, //month
+                                    datasets: [{
+                                        label: 'Revenue',
+                                        data: revenueInYearArray, //revenue
+                                        borderWidth: 1
+                                    }, {
+                                        label: 'Cost',
+                                        data: costInYearArray, //revenue
+                                        borderWidth: 1,
+                                    },
+                                        {
+                                            label: 'Profit',
+                                            data: profitInYearArray, //revenue
+                                            borderWidth: 1
+                                        }
+
+                                    ]
+                                },
+                                options: {
+                                    locale: 'en-US',
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                callback: (value, index, values) => {
+                                                    return new Intl.NumberFormat('en-US', {
+                                                        style: 'currency',
+                                                        currency: 'USD',
+                                                        maximumSignificantDigits: 3
+                                                    }).format(value)
+                                                }
+                                            }
+
+                                        }
+                                    },
+                                },
+                                plugins: [ChartDataLabels]
+                            });
+
+
+                        }
+                        // Do something with the response data
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        // Handle error
+                    }
+                });
+            }
+
+            function loadOrderIn3Month(currentYear) {
+                console.log(currentYear)
+
+                $.ajax({
+                    type: "GET",
+                    url: api_getOrderCount3Month + currentYear,
+                    dataType: "json",
+                    contentType: "application/json",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    data: {},
+                    success: function (response) {
+                        console.log(response);
+                        if (response.statusCode == 200) {
+                            console.log(response)
+                            const monthsArray = [];
+                            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                            // const orderComplete = response.message['totalOrderCompleted']
+                            // const orderRefund = response.message['totalOrderRefund']
+                            // const orderCancel = response.message['totalOrderCancel']
+                            // const orderUnComplete = response.message['totalOrderUncompleted']
+
+                            const orderCompleted = []
+                            const orderRefunded = []
+                            const orderCanceled = []
+                            const orderUnCompleted = []
+                            const orderIn3Month = [];
+
+                            response.message['orderIn3Month'].map(item => {
+                                const monthName = monthNames[item.month - 1];
+                                monthsArray.push(monthName);
+                                orderCompleted.push(item.countOrderCompleted)
+                                orderRefunded.push(item.countOrderRefunded)
+                                orderCanceled.push(item.countOrderCanceled)
+                                orderUnCompleted.push(item.countOrderUnCompleted)
+                            });
+
+                            const ctx1 = document.getElementById('orderCount3MonthChart').getContext('2d');
+                            new Chart(ctx1, {
+                                type: 'bar',
+                                data: {
+                                    labels: monthsArray, //month
+                                    datasets: [{
+                                        label: 'Order Completed',
+                                        data: orderCompleted, //revenue
+                                        borderWidth: 1, formatter: function (value, context) { return value || null; }
+                                    },
+                                        {
+                                            label: 'Order Refunded',
+                                            data: orderRefunded, //revenue
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Order Canceled',
+                                            data: orderCanceled, //revenue
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Order Uncompleted',
+                                            data: orderUnCompleted, //revenue
+                                            borderWidth: 1
+                                        }
+                                    ]
+                                },
+                                options: {
+
+                                    scales: {
+                                        y: {
+                                            ticks: {
+                                                precision: 0
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: [ChartDataLabels]
+                            });
+
+
+                        }
+                        // Do something with the response data
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        // Handle error
+                    }
+                });
+            }
+
+        });
+
+    </script>
+</section>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate/adminLayout}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Management</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap4.min.css">
+</head>
+<body>
+<section class="content" layout:fragment="content">
+<div class="content-wrapper">
+    <section class="content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                        <!-- Content Wrapper. Contains page content -->
+                        <h2>sasdasdsadasd sadasdasd</h2>
+                        <!-- /.control-sidebar -->
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</section>
+<!-- ./wrapper -->
+</body>
+<section layout:fragment="optional">
+    <script>
+        var domain = "http://localhost:9999"
+        var api_delete_emp = domain + "/staff/employees/delete/";
+        $(document).ready(function () {
+
+            $('table.display').DataTable();
+            $('.btnDeleteEmp').on('click',function (event) {
+
+                let emp_id = $(this).closest('tr').find('.employee-id').data('empid');
+                console.log(emp_id);
+                var token = $("#token").val();
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: api_delete_emp + emp_id,
+                            dataType: "json",
+                            contentType: "application/json",
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            data: { },
+                            success: function(response) {
+                                console.log(response);
+                                if(response.statusCode == 200){
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'Your file has been deleted.',
+                                        'success'
+                                    )
+                                    window.location.href = '/staff/employees/getAll';
+                                }
+                                // Do something with the response data
+                            },
+                            error: function(xhr, textStatus, errorThrown) {
+                                console.log(xhr.responseText);
+                                // Handle error
+                            }
+                        });
+
+                    }
+                })
+            })
+        });
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.5/js/dataTables.buttons.min.js"></script>
+    <!-- Page specific script -->
+
+</section>
+</html>

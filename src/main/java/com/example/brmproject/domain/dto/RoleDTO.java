@@ -1,6 +1,5 @@
 package com.example.brmproject.domain.dto;
 
-import com.example.brmproject.domain.entities.UserRoleEntity;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;

@@ -2,7 +2,7 @@ package com.example.brmproject.domain.dto;
 
 import com.example.brmproject.domain.entities.CustomerEntity;
 import com.example.brmproject.domain.entities.StaffEntity;
-import com.example.brmproject.domain.entities.UserRoleEntity;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate/adminlayout}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Update</title>
+    <style>
+        .error {
+            color: red;
+        }
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        body{margin-top:20px;
+            background-color:#f2f6fc;
+            color:#69707a;
+        }
+        .img-account-profile {
+            height: 10rem;
+        }
+        .rounded-circle {
+            border-radius: 10% !important;
+        }
+        .card {
+            box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+        }
+        .card .card-header {
+            font-weight: 500;
+        }
+        .card-header:first-child {
+            border-radius: 0.35rem 0.35rem 0 0;
+        }
+        .card-header {
+            padding: 1rem 1.35rem;
+            margin-bottom: 0;
+            background-color: rgba(33, 40, 50, 0.03);
+            border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+        }
+
+
+        .nav-borders .nav-link.active {
+            color: #0061f2;
+            border-bottom-color: #0061f2;
+        }
+        .nav-borders .nav-link {
+            color: #69707a;
+            border-bottom-width: 0.125rem;
+            border-bottom-style: solid;
+            border-bottom-color: transparent;
+            padding: 0.5rem 0;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+
+    </style>
+
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <section layout:fragment="content">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Update Profile</h1>
+                        </div>
+
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+            <div class="container-xl px-4 mt-4">
+                <!-- Account page navigation-->
+                <nav class="nav nav-borders">
+                    <th:block th:if="${errorMessages != null}">
+                        <ul>
+                            <li th:each="error : ${errorMessages}" th:text="${error}" style="color: red"></li>
+                        </ul>
+                    </th:block>
+
+                    <th:block th:if="${message != null}">
+                        <li style="color: green" th:text="${message}"></li>
+                    </th:block>
+
+                </nav>
+                <hr class="mt-0 mb-4">
+                <form method="post" th:action="@{/staff/employees/update}" th:object="${registerDTO}" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control" th:field="*{employeeId}" th:value="*{employeeId}">
+
+                <div class="row">
+
+                    <div class="col-xl-4">
+                        <!-- Profile picture card-->
+                        <div class="card mb-4 mb-xl-0">
+                            <div class="card-header">Profile Picture</div>
+                            <div class="card-body text-center">
+                                <!-- Profile picture image-->
+                                <a href="#" class="circle">
+                                    <img th:alt="${registerDTO.getName()}" th:src="'data:image/jpeg;base64,'+${registerDTO.getAvatar()}" class="img-account-profile rounded-circle mb-2" alt="User Image">
+                                </a>
+                                <label for="file-upload" class="custom-file-upload">
+                                    <i class="fa fa-cloud-upload"></i> Change Avatar
+                                </label>
+                                <input id="file-upload"  name="employee-create-pic" type="file" style="display:none;">
+                                <!-- Profile picture help block-->
+                                <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 2 MB</div>
+                                <!-- Profile picture upload button-->
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-8">
+                        <!-- Account details card-->
+                        <div class="card mb-4">
+                            <div class="card-header">Account Details</div>
+                            <div class="card-body">
+                                    <!-- Form Group (username)-->
+                                    <div class="mb-3">
+
+                                    </div>
+
+                                <div class="row gx-3 mb-3">
+                                    <!-- Form Group (first name)-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1">Username</label>
+                                        <input type="text" readonly class="form-control" th:field="*{username}" required>
+                                        <ul>
+                                            <th:block th:if="${result != null}">
+                                                <li th:each="err : ${result.getFieldErrors('username')}" th:text="${err.defaultMessage}" class="error" />
+                                            </th:block>
+                                        </ul>
+                                    </div>
+                                    <!-- Form Group (last name)-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1">Password: </label>
+                                        <input type="password" class="form-control"  placeholder="Change your password here">
+                                        <ul>
+                                            <th:block th:if="${result != null}">
+                                                <li th:each="err : ${result.getFieldErrors('password')}" th:text="${err.defaultMessage}" class="error" />
+                                            </th:block>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                    <!-- Form Row-->
+                                    <div class="row gx-3 mb-3">
+                                        <!-- Form Group (first name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1">Full Name: </label>
+                                            <input type="text" class="form-control" th:field="*{name}" th:value="*{name}" required>
+                                            <ul>
+                                                <th:block th:if="${result != null}">
+                                                    <li th:each="err : ${result.getFieldErrors('name')}" th:text="${err.defaultMessage}" class="error" />
+                                                </th:block>
+                                            </ul>
+                                        </div>
+                                        <!-- Form Group (last name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1">Phone: </label>
+                                            <input type="text" class="form-control" th:field="*{phone}">
+                                                <ul >
+                                                    <th:block th:if="${result != null}">
+                                                        <li th:each="err : ${result.getFieldErrors('phone')}" th:text="${err.defaultMessage}" class="error" />
+                                                    </th:block>
+                                                </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Form Row        -->
+                                    <div class="row gx-3 mb-3">
+                                        <!-- Form Group (organization name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1">Address: </label>
+                                            <input type="text" class="form-control" th:field="*{address}"  required>
+                                                <ul>
+                                                    <th:block th:if="${result != null}">
+                                                        <li th:each="err : ${result.getFieldErrors('address')}" th:text="${err.defaultMessage}" class="error" />
+                                                    </th:block>
+                                                </ul>
+                                        </div>
+                                        <!-- Form Group (location)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1">Email: </label>
+                                            <input type="text" class="form-control" th:field="*{email}" required>
+                                            <ul>
+                                                <th:block th:if="${result != null}">
+                                                    <li th:each="err : ${result.getFieldErrors('email')}" th:text="${err.defaultMessage}" class="error" />
+                                                </th:block>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Form Group (email address)-->
+                                <div class="row gx-3 mb-3">
+                                    <!-- Form Group (phone number)-->
+
+                                    <div class="col-md-6">
+                                        <label class="small mb-1">Salary ($)</label>
+                                        <th:block th:if="${#authorization.expression('hasAnyRole(''ADMIN'')')}">
+                                            <input type="text" class="form-control" th:field="*{salary}" required>
+                                        </th:block>
+
+                                        <th:block th:if="${#authorization.expression('hasAnyRole(''ORGANIZE'',''SALE'')')}">
+                                                <input type="text" class="form-control" th:field="*{salary}" readonly>
+                                        </th:block>
+                                        <ul>
+                                            <th:block th:if="${result != null}">
+                                                <li th:each="err : ${result.getFieldErrors('salary')}" th:text="${err.defaultMessage}" class="error" />
+                                            </th:block>
+                                        </ul>
+                                    </div>
+                                    <!-- Form Group (birthday)-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1">Gender: </label><br>
+                                        <input type="radio" th:field="*{gender}" th:value="Male" th:checked="${registerDTO.getGender()}"/> Male
+                                        <input type="radio" th:field="*{gender}" th:value="Female" th:checked="${registerDTO.getGender()}"/> Female
+
+
+                                    </div>
+                                </div>
+                                    <!-- Form Row-->
+
+                                    <div class="row gx-3 mb-3">
+
+
+                                        <th:block th:if="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'')')}">
+                                            <div class="col-md-6">
+                                                <label class="col-form-label">Team:</label>
+                                                <select th:field="*{team_id}"  class="form-control">
+                                                    <th:block th:each="c:${teamList}">
+                                                        <option  th:value="${c.getId()}" th:text="${c.getTeamName()}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label th:for="isLeader">Is Leader?</label><br>
+                                                <input type="radio" th:field="*{isLeader}" th:value="1" th:checked="${registerDTO.getIsLeader()}"/> Yes
+                                                <input type="radio" th:field="*{isLeader}" th:value="0" th:checked="${registerDTO.getIsLeader()}"/> No
+                                            </div>
+                                        </th:block>
+
+
+                                        <th:block th:unless="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'')')}">
+
+                                            <div class="col-md-6">
+                                                <label class="col-form-label">Team:</label>
+                                                <select th:field="*{team_id}" class="form-control" readonly disabled="disabled">
+                                                    <th:block th:each="c:${teamList}">
+                                                        <option  th:value="${c.getId()}" th:text="${c.getTeamName()}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label th:for="isLeader">Is Leader?</label><br>
+                                                <input type="radio" th:field="*{isLeader}" th:value="1" th:checked="${registerDTO.getIsLeader()}" th:disabled="${registerDTO.getIsLeader() == 0}"/> Yes
+                                                <input type="radio" th:field="*{isLeader}" th:value="0" th:checked="${registerDTO.getIsLeader()}"  th:disabled="${registerDTO.getIsLeader() == 1}"/> No
+                                            </div>
+                                        </th:block>
+
+
+                                    </div>
+
+                                <div class="row gx-3 mb-3">
+
+                                   <div class="col-md-6">
+                                       <label class="small mb-1">JoinDate</label>
+                                       <th:block th:if="${#authorization.expression('hasAnyRole(''ORGANIZE'',''SALE'')')}">
+                                           <input type="date" class="form-control" readonly th:field="*{joinDate}"  value="2013-03-08"  required>
+                                       </th:block>
+
+                                       <th:block th:unless="${#authorization.expression('hasAnyRole(''ORGANIZE'',''SALE'')')}">
+                                           <input type="date" class="form-control" th:field="*{joinDate}"  value="2013-03-08"  required>
+                                       </th:block>
+                                       <ul>
+                                           <th:block th:if="${result != null}">
+                                               <li th:each="err : ${result.getFieldErrors('joinDate')}" th:text="${err.defaultMessage}" class="error" />
+                                           </th:block>
+                                       </ul>
+                                   </div>
+                                </div>
+
+                                    <!-- Save changes button-->
+                                   <div style="float: right">
+                                       <a th:href="'javascript:window.history.back()'" class="btn btn-primary">Back</a>
+                                       <input type="submit" class="btn btn-primary" value="Update Profile">
+                                   </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </section>
+</div>
+<!-- ./wrapper -->
+<section layout:fragment="optional">
+    <script type="text/javascript">
+        const fileInput = document.getElementById('file-upload');
+
+        fileInput.addEventListener('change', event => {
+            const file = event.target.files[0];
+            const fileSize = file.size; // in bytes
+            const maxSize = 1048576; // 1MB in bytes
+
+            if (fileSize > maxSize) {
+                // File size exceeds maximum limit
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'File size exceeds the maximum limit of 2MB.!',
+                })
+                alert('');
+                event.target.value = ''; // Clear the file input value
+            }
+        });
+
+        $('#file-upload').change(function() {
+            var i = $(this).prev('label').clone();
+            var file = $('#file-upload')[0].files[0].name;
+            $(this).prev('label').text(file);
+        });
+    </script>
+</section>
+</body>
+</html>
+

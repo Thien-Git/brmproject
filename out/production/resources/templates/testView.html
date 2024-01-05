@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container">
+  <div>
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Debit</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="customer : ${customers}">
+        <td th:text="${customer.getId()}"></td>
+        <td th:text="${customer.getName()}"></td>
+        <td th:text="${customer.getPhone()}"></td>
+        <td th:text="${customer.getAddress()}"></td>
+        <td th:text="${customer.getDebit()}"></td>
+      </tr>
+      </tbody>
+    </table>
+    <a th:href="@{/customers/new}"> create</a>
+  </div>
+</div> <!-- /container -->
+</body>
+</html>

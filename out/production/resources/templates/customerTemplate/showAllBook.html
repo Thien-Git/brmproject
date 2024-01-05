@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container">
+  <div>
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Available number</th>
+        <th>rent price</th>
+        <th>Booking</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="book : ${books}">
+        <td th:text="${book.getId()}"></td>
+        <td th:text="${book.getTitle()}"></td>
+        <td th:text="${book.getAuthor()}"></td>
+        <td th:text="${book.getAvalableBook()}"></td>
+        <td th:text="${book.getPricePerDay()}"></td>
+        <td><a th:href="@{/customers/addItem/{bookId}(bookId=${book.getId()})}">Add</a></td>
+      </tr>
+      </tbody>
+    </table>
+    <a th:href="@{/customers/new}"> create</a>
+  </div>
+</div> <!-- /container -->
+</body>
+</html>

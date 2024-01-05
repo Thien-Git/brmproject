@@ -60,8 +60,8 @@ public class CustomerController {
     @GetMapping("/customers")
     public String showAll(Model model)
     {
-//        List<CustomerDTO> list=service.findAll();
-//        model.addAttribute("customers",list);
+    //    List<CustomerDTO> list=service.findAll();
+    //    model.addAttribute("customers",list);
         return "adminTemplate/test";
     }
 }
